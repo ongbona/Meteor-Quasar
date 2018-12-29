@@ -1,11 +1,15 @@
 <template>
 <q-layout>
-    <q-btn class="btn" style="margin-bottom: 10px" color="primary" icon="add" :to="{name:'itemForm',params:{_id:'new'}}" />
-    
+    <q-btn
+        style="margin-bottom: 10px"
+        color="primary"
+        icon="add"
+        :to="{name:'invoiceForm',params:{_id:'new',name:'invoice'}}" />
+
     <q-page-container>
         <!-- <router-view></router-view> -->
         <q-table
-            title="Item"
+            title="Invoice"
             :data="item"
             :columns="col">
             <q-tr
@@ -13,16 +17,13 @@
                 slot-scope="data"
                 :props="data">
                 <q-td>
-                    {{data.row.name}}
+                    {{data.row.customerDoc.name}}
                 </q-td>
                 <q-td>
-                    {{data.row.price | getMoney}}
+                    {{data.row.date | getDate}}
                 </q-td>
                 <q-td>
-                    {{data.row.cust | getMoney}}
-                </q-td>
-                <q-td>
-                    {{data.row.memo}}
+                    {{data.row.items | getTotal}}
                 </q-td>
                 <q-td>
                     <q-btn
@@ -50,85 +51,78 @@
 
 <script>
 var numeral = require('numeral');
+import moment, {
+    invalid
+} from 'moment'
 import {
-    findItem,
-    removeItem,
-} from '/both/methods/item_methods.js'
-import {
-    Meteor
-} from 'meteor/meteor'
+    removeInvoice,
+    findInvoice
+} from '/both/methods/invoice_methods.js'
+import _ from 'lodash'
 export default {
-    data: function () {
+    name: "invoice",
+    data() {
         return {
-           
+
             item: [],
             col: [{
                     field: 'name',
                     label: 'Name',
-
                     align: 'left'
                 },
                 {
-                    label: 'Price',
-                    field: 'price',
+                    label: 'Date',
+                    field: 'date',
                     align: 'left'
                 },
                 {
-                    label: 'Cust',
-                    field: 'cust',
-                    align: 'left'
-                },
-                {   
-                    label: 'Memo',
-                    field: 'memo',
+                    label: 'Total',
+                    field: 'items',
                     align: 'left'
                 },
 
             ]
         }
     },
-   filters:{
-       getMoney(val){
-           return numeral(val).format('0,0[.]00 $')
-       }
-   },
+    filters: {
+        getDate(val) {
+            return moment(val).format('DD-MM-YYYY')
+        },
+        getTotal(val){
+            let total=null
+            val.forEach(doc => {
+                total+=doc.amount
+            });
+            return numeral(total).format('$ 0,0[.]00')
+        }
+    },
     mounted() {
-        this.getItem()
+        this.getInvoice()
     },
     methods: {
-        AlertDanger(val) {
-            this.$q.notify({
-
-                message: val,
-                type: 'negative',
-                position: 'top'
+        btnRemove(id){
+            removeInvoice.callPromise({_id:id}).then(result=>{
+                this.getInvoice()
             })
         },
-        getItem() {
-            findItem.callPromise().then(result => {
-                this.item = result
-            })
-        },
-
-        btnRemove(id) {
-            removeItem.callPromise({
-                _id: id
-            }).then(result => {
-                this.getItem()
-                this.AlertDanger('Deleted item !')
-            }).then(err => {
-                console.log(err);
-            })
-        },
-        btnEdit(_id) {
-           this.$router.push({
-                name: 'itemForm',
+        btnEdit(id) {
+            this.$router.push({
+                name: 'invoiceForm',
                 params: {
-                    _id: _id
+                    _id: id,
+                    name:'invoice'
                 }
             })
-        }
-    }
+        },
+        getInvoice() {
+            findInvoice.callPromise().then(result => {
+                this.item = result
+            }).catch(error => {
+                console.log(error);
+            })
 
-}
+        }
+
+    }
+};
 </script>

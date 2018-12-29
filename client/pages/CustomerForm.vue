@@ -2,7 +2,7 @@
 <div>
     <q-layout>
         <q-field
-            :error="errors.first('name')"
+            :error="errors.has('name')"
             :error-label="errors.first('name')"
             count
             label="Name"
@@ -15,7 +15,7 @@
                 color="purple-2"></q-input>
         </q-field>
         <q-field
-            :error="errors.first('gender')"
+            :error="errors.has('gender')"
             :error-label="errors.first('gender')"
             count
             label="Gender"
@@ -29,7 +29,7 @@
                 :options="genderOst" />
         </q-field>
         <q-field
-            :error="errors.first('age')"
+            :error="errors.has('age')"
             :error-label="errors.first('age')"
             count
             label="Age"
@@ -43,7 +43,7 @@
                 color="purple-2"></q-input>
         </q-field>
         <q-field
-            :error="errors.first('address')"
+            :error="errors.has('address')"
             :error-label="errors.first('address')"
             count
             label="Address"
@@ -56,7 +56,7 @@
                 color="purple-2"></q-input>
         </q-field>
         <q-field
-            :error="errors.first('phone')"
+            :error="errors.has('phone')"
             :error-label="errors.first('phone')"
             count
             label="Phone"
@@ -76,7 +76,7 @@
             class="float-right"
             color="info"
             icon="undo"
-            to='/customer'
+            @click="$router.back()"
             />
      
     </q-layout>

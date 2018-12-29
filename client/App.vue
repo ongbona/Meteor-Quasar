@@ -24,35 +24,67 @@
         <q-layout-drawer
             side="left"
             v-model="visible">
-           
+
             <q-collapsible
-    
                 icon="explore"
                 indent
                 label="Manage">
                 <q-item to='/home'>
-                    <q-item-side icon="home"  color='primary'/>
+                    <q-item-side
+                        icon="home"
+                        color='primary' />
                     <q-item-main>
                         <q-item-tile>Home</q-item-tile>
                     </q-item-main>
                 </q-item>
-                <q-item link :to="{name:'item'}">
-                  <q-item-side icon="folder"  color="primary"/>
-                    <q-item-main >
+                <q-item
+                    link
+                    :to="{name:'item'}">
+                    <q-item-side
+                        icon="folder"
+                        color="primary" />
+                    <q-item-main>
                         <q-item-tile>Item</q-item-tile>
                     </q-item-main>
                 </q-item>
                 <q-item to="/customer">
-                    <q-item-side icon="group"  color="primary"/>
+                    <q-item-side
+                        icon="group"
+                        color="primary" />
                     <q-item-main>
                         <q-item-tile>Customer</q-item-tile>
                     </q-item-main>
                 </q-item>
-                <q-item link to='/report'>
-                    <q-item-side icon="report" color="primary"/>
+                <q-item :to="{name:'invoice'}">
+                    <q-item-side
+                        icon="payment"
+                        color="primary" />
+                    <q-item-main>
+                        <q-item-tile>Invoice</q-item-tile>
+                    </q-item-main>
+                </q-item>
+                <q-item
+                    link
+                    to='/report'>
+                    <q-item-side
+                        icon="chrome_reader_mode"
+                        color="primary" />
+                    <q-item-main>
+                        <q-item-tile>Report</q-item-tile>
+                    </q-item-main>
+                </q-item>
+                <q-item
+                    link
+                    to='/report.date'>
+                    <q-item-side
+                        icon="date_range"
+                        color="primary" />
+                    <q-item-main>
+                        <q-item-tile>Report by date</q-item-tile>
+                    </q-item-main>
                 </q-item>
             </q-collapsible>
-             <!-- <q-scroll-area class="fit">
+            <!-- <q-scroll-area class="fit">
                 <q-item to="/">Home</q-item>
             </q-scroll-area> -->
         </q-layout-drawer>
@@ -75,8 +107,8 @@
 
         <!-- sub-routes get injected here: -->
         <q-page-container>
-             <h3  style="padding-left:20px">{{$route.meta.title}}</h3>
-            <router-view class="container"/>
+            <h3 style="padding-left:20px">{{$route.meta.title}}</h3>
+            <router-view class="container" />
         </q-page-container>
 
         <!-- Footer -->
@@ -152,6 +184,10 @@ export default {
         }
     },
     methods: {
+       
+       btnBack(){
+           this.$router.back()
+       },
         btnshow() {
             if (this.count == 1) {
                 this.visible = true

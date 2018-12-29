@@ -24,3 +24,4 @@ mdg:validated-method
 aldeed:simple-schema
 aldeed:collection2@3.0.0
 didericis:callpromise-mixin
+sakulstra:aggregate

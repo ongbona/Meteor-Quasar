@@ -1,57 +1,88 @@
 <template>
-    <q-layout view="hHr LpR lFf">
-                <q-page-container>
-        <q-field
-            :label-width="2"
-            label="Name"
-            color='primary'
-            :error="errors.first('name')"
-            :error-label="errors.first('name')"
-            :count="10">
-            <q-input
-                name='name'
-                v-validate="'required'"
-                inverted-light
-                color="purple-2"
-                v-model="form.name" />
-        </q-field>
-        <q-field
-            :error="errors.first('price')"
-            :error-label="errors.first('price')"
-            :label-width="2"
-            count
-            label="Price">
-            <q-input
-                name='price'
-                v-validate="{required:true,numeric:true,min_value:1}"
-                type="number"
-                inverted-light
-                color="purple-2"
-                v-model="form.price" />
-        </q-field>
-        <q-field
-            :error="errors.first('cust')"
-            :error-label="errors.first('cust')"
-            :label-width="2"
-            label="Cust"
-            :count="10">
-            <q-input
-                name='cust'
-                v-validate="{required:true,numeric:true,min_value:0}"
-                type="number"
-                inverted-light
-                color="purple-2"
-                v-model="form.cust" />
-        </q-field>
-        <q-field
-            :label-width="2"
-            label="Memo"
-            :count="10">
-            <q-input
-                inverted-light
-                color="purple-2"
-                v-model="form.memo" />
-        </q-field>
+<q-layout>
+    <q-page-container>
+        <table class="table">
+            <thead>
+                <tr class="tr">
+                    <th class="th">Name</th>
+                    <th class="th">Price</th>
+                    <th class="th">Cost</th>
+                    <th class="th">Memo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    v-for="(item,index) in items"
+                    class="tr"
+                    :key="index">
+                    <td class="td">
+                        <q-field
+                            helper="Please input item name"
+                            color='primary'
+                            :error="errors.has('name')"
+                            :error-label="errors.first('name')">
+                            <q-input
+                                name='name'
+                                v-validate="'required'"
+                               
+                             
+                                v-model="item.name" />
+                        </q-field>
+                    </td>
+                    <td class="td">
+                        <q-field
+                        helper="Please input item price"
+                            :error="errors.has('price')"
+                            :error-label="errors.first('price')">
+                            <q-input
+                                name='price'
+                                v-validate="{required:true,numeric:true,min_value:1}"
+                                type="number"
+                               
+                                v-model="item.price" />
+                        </q-field>
+                    </td>
+                    <td class="td">
+                        <q-field
+                        helper="Please input item cust"
+                            :error="errors.has('cust')"
+                            :error-label="errors.first('cust')">
+                            <q-input
+                                name='cust'
+                                v-validate="{required:true,numeric:true,min_value:0}"
+                                type="number"
+                             
+                                v-model="item.cust" />
+                        </q-field>
+                    </td>
+                    <td class="td">
+                        <q-field
+                        helper="Please input item memo">
+                            <q-input
+                              
+                                v-model="item.memo" />
+                        </q-field>
+                    </td>
+                    <td class="td">
+                        <q-btn
+                            v-if="items.length>1"
+                            color="red"
+                            round
+                            size="13px"
+                            icon="clear"
+                            @click="deleteRow(index)" />
+                        <q-btn
+                            round
+                            size="13px"
+                            v-if="items.length-1==index"
+                            color="primary"
+                            icon="add"
+                            @click="addForm(index)" />
+                    </td>
+                </tr>
+            </tbody>
+        
+        </table>
 
         <q-btn
             color="primary"
@@ -59,15 +90,16 @@
             @click="btnAddItem">
             {{fromType}}
         </q-btn>
-        <q-btn
-            class="float-right	"
+         <q-btn
+            class="float-left	"
             color="info"
             icon="undo"
-            to='/item'>
+            @click="$router.back()"
+           >
         </q-btn>
     </q-page-container>
 
-    </q-layout>
+</q-layout>
 </template>
 
 <script>
@@ -75,7 +107,7 @@ import {
     findItemById,
     insertItem,
     updateItem,
-   
+
 } from '/both/methods/item_methods.js'
 import {
     Meteor
@@ -84,18 +116,32 @@ export default {
     data: function () {
         return {
             fromType: 'Add item',
-            form: {
+            indexs: 1,
+            items: [{
                 name: '',
-                price: '',
-                cust: null,
-                memo: '',
-            },
+                cost: null,
+                price: null,
+                memo: null,
+            }],
         }
     },
     mounted() {
         this.getItem()
     },
     methods: {
+        deleteRow(index) {
+            this.items.splice(index, 1)
+        },
+        addForm(val) {
+            this.indexs++
+
+            this.items.push({
+                name: '',
+                qty: null,
+                price: null,
+                amount: 0,
+            });
+        },
         Alert(val) {
             this.$q.notify({
 
@@ -113,35 +159,43 @@ export default {
             })
         },
         getItem() {
-            if(this.$route.params._id!='new'){
-                this.fromType='Update item'
-                findItemById.callPromise({_id:this.$route.params._id}).then(result => {
-                this.form = result
-            })
+            if (this.$route.params._id != 'new') {
+                this.fromType = 'Update item'
+                findItemById.callPromise({
+                    _id: this.$route.params._id
+                }).then(result => {
+                    this.form = result
+                })
             }
         },
         btnAddItem() {
             this.$validator.validateAll().then(result => {
                 if (result) {
+                    
                     if (this.fromType == 'Add item') {
-                        let doc = {
-                            name: this.form.name,
-                            price: parseFloat(this.form.price),
-                            cust: parseFloat(this.form.cust),
-                            memo: this.form.memo,
-                        }
-                        insertItem.callPromise(doc).then(result => {
-
-                            this.getItem()
-                            this.Alert('Added item')
-                            this.form = {
-                                name: '',
-                                price: '',
-                                cust: null,
-                                memo: '',
+                        let cout=0
+                        this.items.forEach(doc => {
+                            cout++
+                            data = {
+                                name: doc.name,
+                                price: parseFloat(doc.price),
+                                cust: parseFloat(doc.cust),
+                                memo: doc.memo,
                             }
+                            insertItem.callPromise(data).then(result => {
+                                console.log(data);
+                            })
+                        });
+                        this.getItem()
+                        this.Alert('Added '+cout+' items')
+                        this.items=[{
+                                name: '',
+                                cost: null,
+                                price: null,
+                                memo: null,
+                            }],
                             this.$validator.reset()
-                        })
+
                     } else {
                         updateItem.callPromise(this.form).then(result => {
                             this.getItem()
@@ -160,8 +214,7 @@ export default {
                 }
             })
         },
-    
-    
+
     }
 
 }

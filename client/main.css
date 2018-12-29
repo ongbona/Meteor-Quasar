@@ -1,14 +1,29 @@
-body {
+.table {
+  
+  border-collapse:collapse;
+  border-spacing:0;
+  width:100%;
+  display:table;
+}
+.border .tr{
+  border:1px solid rgb(184, 174, 174)!important
+}
+.hover  tbody tr:hover{
+  background-color:rgb(247, 244, 255)
+}
+.th{
+  /* border: 1px; */
+  text-align: left;
   padding: 10px;
-  font-family: sans-serif;
 }
-
-.q-field-label-inner{
-  color: black
+.td{
+  /* color: rgb(197, 105, 197); */
+  /* background-color: rgb(224, 125, 224) */
+  padding: 10px;
 }
-.container{
-  padding: 20px
-  /* padding-top: 20px;
-  padding-left: 20px;
-  padding-right: 20px */
+.btn:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+.float-center{
+  margin-left:94.8%;
 }

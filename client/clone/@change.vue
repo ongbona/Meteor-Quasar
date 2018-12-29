@@ -1,7 +1,7 @@
 <template>
 <div>
     <h5>Wellcome to the Dynamic form</h5>
-   <q-datetime v-model="date" type="date" />
+
     <table class="table">
         <thead>
             <tr class="tr">
@@ -78,7 +78,6 @@ export default {
     name: 'Home',
     data() {
         return {
-            date:'',
             indexs: 1,
             items: [{
                 name: '',
